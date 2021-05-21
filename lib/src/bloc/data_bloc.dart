@@ -37,12 +37,25 @@ class DataBloc extends Bloc<DataEvent, DataState> {
       yield* _mapAddReduceCartItemEventToState(event.cart);
     }
 
+    if (event is DeleteCartItemEvent) {
+      yield* _mapDeleteCartItemEventToState(event.cart);
+    }
+
     if (event is FetchCartEvent) {
       yield CartFetchedState(cart);
     }
 
     if (event is FetchInitialCartEvent) {
       yield InitialCartFetchedState(cart);
+    }
+
+    if (event is FilterProductsEvent) {
+      yield* _mapFilterProductsEventToState(event.priceRange, event.categories);
+    }
+
+    if (event is SortProductsEvent) {
+      List<Product> products = ProductsData.sortProducts();
+      yield ProductsFetchedState(products);
     }
   }
 
@@ -68,6 +81,19 @@ class DataBloc extends Bloc<DataEvent, DataState> {
         cart.indexWhere((element) => element.product == _cart.product) + 1,
         [_cart]);
 
+    yield CartModifiedState(List.from(cart));
+  }
+
+  Stream<DataState> _mapFilterProductsEventToState(
+      List<int> priceRange, List<String> categories) async* {
+    List<Product> products = ProductsData.filterProduct(priceRange, categories);
+    yield ProductsFetchedState(products);
+  }
+
+  Stream<DataState> _mapDeleteCartItemEventToState(Cart _cart) async* {
+    if (cart.contains(_cart)) {
+      cart.remove(_cart);
+    }
     yield CartModifiedState(List.from(cart));
   }
 }

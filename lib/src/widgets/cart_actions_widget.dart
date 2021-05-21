@@ -27,7 +27,10 @@ class _CartItemActionsWidgetState extends State<CartItemActionsWidget> {
     return ListTile(
       minVerticalPadding: 16.0,
       leading: IconButton(
-        onPressed: () {},
+        onPressed: () {
+         context.read<DataBloc>().add(DeleteCartItemEvent(
+                          widget.cart.copyWith(count: value)));
+        },
         icon: Icon(
           Icons.delete_outlined,
           color: Colors.white,

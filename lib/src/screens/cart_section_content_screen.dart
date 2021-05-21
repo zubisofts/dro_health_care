@@ -33,25 +33,61 @@ class CartSectionContentScreen extends StatelessWidget {
                   current is CartFetchedState || current is CartModifiedState,
               builder: (context, state) {
                 if (state is CartFetchedState) {
-                  return Container(
-                    child: ListView.builder(
-                      physics: NeverScrollableScrollPhysics(),
-                      itemCount: state.carts.length,
-                      itemBuilder: (context, index) =>
-                          CartItemWrapper(cart: state.carts[index]),
-                    ),
-                  );
+                  if (state.carts.isNotEmpty) {
+                    return Container(
+                      child: ListView.builder(
+                        physics: NeverScrollableScrollPhysics(),
+                        itemCount: state.carts.length,
+                        itemBuilder: (context, index) =>
+                            CartItemWrapper(cart: state.carts[index]),
+                      ),
+                    );
+                  } else {
+                    return Center(
+                      child: Column(
+                        children: [
+                          Image.asset(
+                            'assets/icons/empty-cart.png',
+                            width: 50,
+                          ),
+                          Text(
+                            'Oops! Nothing was found!',
+                            textAlign: TextAlign.center,
+                            style: TextStyle(color: Colors.grey),
+                          )
+                        ],
+                      ),
+                    );
+                  }
                 }
 
                 if (state is CartModifiedState) {
-                  return Container(
-                    child: ListView.builder(
-                      physics: NeverScrollableScrollPhysics(),
-                      itemCount: state.carts.length,
-                      itemBuilder: (context, index) =>
-                          CartItemWrapper(cart: state.carts[index]),
-                    ),
-                  );
+                  if (state.carts.isNotEmpty) {
+                    return Container(
+                      child: ListView.builder(
+                        physics: NeverScrollableScrollPhysics(),
+                        itemCount: state.carts.length,
+                        itemBuilder: (context, index) =>
+                            CartItemWrapper(cart: state.carts[index]),
+                      ),
+                    );
+                  } else {
+                    Center(
+                      child: Column(
+                        children: [
+                          Image.asset(
+                            'assets/icons/empty-cart.png',
+                            width: 50,
+                          ),
+                          Text(
+                            'Oops! Nothing was found!',
+                            textAlign: TextAlign.center,
+                            style: TextStyle(color: Colors.grey),
+                          )
+                        ],
+                      ),
+                    );
+                  }
                 }
                 return SizedBox.shrink();
               },

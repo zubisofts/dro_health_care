@@ -2,11 +2,9 @@ import 'package:dro_health_care/src/utils/constants.dart';
 import 'package:flutter/material.dart';
 
 class AppUtils {
-
   static final ThemeData theme = ThemeData(
-    // fontFamily: 'Poppins-Light',
     scaffoldBackgroundColor: Colors.white,
-    fontFamily: "Roboto",
+    fontFamily: "Proxima",
     appBarTheme: AppBarTheme(
       color: Colors.white,
       textTheme: TextTheme(

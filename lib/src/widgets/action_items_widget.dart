@@ -1,6 +1,8 @@
 import 'package:dro_health_care/src/bloc/data_bloc.dart';
+import 'package:entry/entry.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 
 class ActionBarWidget extends StatefulWidget {
   @override
@@ -26,7 +28,9 @@ class _ActionBarWidgetState extends State<ActionBarWidget> {
                 padding:
                     const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
                 child: InkWell(
-                  onTap: () {},
+                  onTap: () {
+                    context.read<DataBloc>().add(SortProductsEvent());
+                  },
                   borderRadius: BorderRadius.circular(100),
                   splashColor: Theme.of(context).colorScheme.secondary,
                   child: Container(
@@ -49,7 +53,9 @@ class _ActionBarWidgetState extends State<ActionBarWidget> {
               Padding(
                 padding: const EdgeInsets.all(16.0),
                 child: InkWell(
-                  onTap: () {},
+                  onTap: () {
+                    showFilterActions(context);
+                  },
                   borderRadius: BorderRadius.circular(100),
                   splashColor: Theme.of(context).colorScheme.secondary,
                   child: Container(
@@ -135,6 +141,130 @@ class _ActionBarWidgetState extends State<ActionBarWidget> {
                   ),
                 ),
               ),
+            ),
+          )
+        ],
+      ),
+    );
+  }
+
+  void showFilterActions(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          content: FilterOptions(
+            onClose: () => Navigator.of(context).pop(),
+          ),
+          title: Text(
+            'Filter',
+            style: TextStyle(fontWeight: FontWeight.bold),
+          ),
+        );
+      },
+    );
+  }
+}
+
+class FilterOptions extends StatefulWidget {
+  final Function onClose;
+
+  const FilterOptions({Key? key, required this.onClose}) : super(key: key);
+
+  @override
+  _FilterOptionsState createState() => _FilterOptionsState();
+}
+
+class _FilterOptionsState extends State<FilterOptions> {
+  late double priceStartValue;
+  late double priceEndValue;
+
+  late List<String> categories;
+  List<String> selectedCategorie = [];
+
+  @override
+  void initState() {
+    priceStartValue = 10;
+    priceEndValue = 5000;
+    categories = ["Tablet", "Capsule", "Soft Gel", "Syrup"];
+    super.initState();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Text(
+            'Price Range',
+            style: TextStyle(),
+          ),
+          RangeSlider(
+            values: RangeValues(priceStartValue, priceEndValue),
+            max: 5000,
+            min: 10,
+            divisions: 5000,
+            onChanged: (value) {
+              setState(() {
+                priceStartValue = value.start;
+                priceEndValue = value.end;
+              });
+            },
+            labels: RangeLabels(
+                '₦${priceStartValue.round()}', '₦${priceEndValue.round()}'),
+          ),
+          Text(
+            'Category',
+            style: TextStyle(),
+          ),
+          Wrap(
+            spacing: 8.0,
+            children: categories
+                .map((cat) => GestureDetector(
+                      onTap: () {
+                        setState(() {
+                          if (selectedCategorie.contains(cat)) {
+                            selectedCategorie.remove(cat);
+                          } else {
+                            selectedCategorie.add(cat);
+                          }
+                        });
+                      },
+                      child: Chip(
+                        backgroundColor: selectedCategorie.contains(cat)
+                            ? Theme.of(context).colorScheme.primary
+                            : Colors.grey[100],
+                        label: Text(
+                          cat,
+                          style: TextStyle(
+                              color: selectedCategorie.contains(cat)
+                                  ? Colors.white
+                                  : Colors.black),
+                        ),
+                      ),
+                    ))
+                .toList(),
+          ),
+          Divider(),
+          SizedBox(
+            height: 16.0,
+          ),
+          Center(
+            child: TextButton(
+              onPressed: () {
+                widget.onClose();
+                context.read<DataBloc>().add(FilterProductsEvent(
+                    selectedCategorie,
+                    [priceStartValue.round(), priceEndValue.round()]));
+              },
+              child: Text(
+                'Apply Filter',
+                style: TextStyle(color: Colors.white),
+              ),
+              style: TextButton.styleFrom(
+                  backgroundColor: Theme.of(context).colorScheme.primary),
             ),
           )
         ],

@@ -69,24 +69,46 @@ class _StoreScreenState extends State<StoreScreen> {
                                 current is ProductsFetchedState,
                             builder: (context, state) {
                               if (state is ProductsFetchedState) {
-                                return GridView.builder(
-                                  physics: BouncingScrollPhysics(),
-                                  // shrinkWrap: true,
-                                  itemCount: state.products.length,
-                                  gridDelegate:
-                                      SliverGridDelegateWithFixedCrossAxisCount(
-                                          crossAxisCount: 2,
-                                          mainAxisSpacing: 16.0,
-                                          crossAxisSpacing: 16.0,
-                                          childAspectRatio: 0.65),
-                                  itemBuilder: (context, index) =>
-                                      ProductItemWidget(
-                                          product: state.products[index]),
-                                );
+                                if (state.products.isNotEmpty) {
+                                  return GridView.builder(
+                                    physics: BouncingScrollPhysics(),
+                                    // shrinkWrap: true,
+                                    itemCount: state.products.length,
+                                    gridDelegate:
+                                        SliverGridDelegateWithFixedCrossAxisCount(
+                                            crossAxisCount: 2,
+                                            mainAxisSpacing: 16.0,
+                                            crossAxisSpacing: 16.0,
+                                            childAspectRatio: 0.65),
+                                    itemBuilder: (context, index) =>
+                                        ProductItemWidget(
+                                            product: state.products[index]),
+                                  );
+                                } else {
+                                  return Container(
+                                    margin: EdgeInsets.symmetric(vertical: 50),
+                                    child: Center(
+                                      child: Column(
+                                        children: [
+                                          Image.asset(
+                                            'assets/icons/empty-box.png',
+                                            width: 50,
+                                          ),
+                                          Text(
+                                            'Oops! Nothing was found!',
+                                            textAlign: TextAlign.center,
+                                            style:
+                                                TextStyle(color: Colors.grey),
+                                          )
+                                        ],
+                                      ),
+                                    ),
+                                  );
+                                }
                               }
 
-                              return Container(
-                                child: Text("Waiting"),
+                              return Center(
+                                child: Text("Loading..."),
                               );
                             },
                           ),

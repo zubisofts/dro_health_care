@@ -72,4 +72,32 @@ class ProductsData {
             product.name.toLowerCase().contains(query.toLowerCase()))
         .toList();
   }
+
+  static List<Product> filterProduct(
+      List<int> priceRange, List<String> categories) {
+    print('priceRange:$priceRange; Categories:$categories');
+
+    // List<Product> filteredProduct = productsList;
+    if (categories.isNotEmpty) {
+      categories.forEach((cat) {
+        productsList = productsList
+            .where((p) => p.category.toLowerCase() == cat.toLowerCase())
+            .toList();
+        productsList = productsList
+            .where((p) => p.price >= priceRange[0] && p.price <= priceRange[1])
+            .toList();
+      });
+    }
+
+    return productsList;
+  }
+
+  static List<Product> sortProducts() {
+    List<Product> prods = productsList;
+    prods.sort((a, b) {
+      return a.price.compareTo(b.price);
+    });
+
+    return prods;
+  }
 }

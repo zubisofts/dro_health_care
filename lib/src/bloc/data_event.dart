@@ -40,6 +40,15 @@ class AddReduceCartItemEvent extends DataEvent {
   List<Object> get props => [cart];
 }
 
+class DeleteCartItemEvent extends DataEvent {
+  final Cart cart;
+
+  DeleteCartItemEvent(this.cart);
+
+  @override
+  List<Object> get props => [cart];
+}
+
 class RemoveCartItemEvent extends DataEvent {
   final Cart cart;
 
@@ -47,4 +56,18 @@ class RemoveCartItemEvent extends DataEvent {
 
   @override
   List<Object> get props => [cart];
+}
+
+class FilterProductsEvent extends DataEvent {
+  final List<String> categories;
+  final List<int> priceRange;
+
+  FilterProductsEvent(this.categories, this.priceRange);
+
+  @override
+  List<Object> get props => [priceRange, categories];
+}
+
+class SortProductsEvent extends DataEvent{
+
 }
